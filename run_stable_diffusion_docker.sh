@@ -1,5 +1,5 @@
 #/bin/bash
-export MY_CONTAINER="stable_diffusion_sample"
+export MY_CONTAINER="stable_diffusion"
 IMAGE_NAME=yellow.hub.cambricon.com/pytorch/pytorch:v1.15.0-torch1.9-ubuntu18.04-py37
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
