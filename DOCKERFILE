@@ -8,5 +8,6 @@ COPY . /workspace/stable_diffusion/
 WORKDIR /workspace/stable_diffusion
 
 ENV VIRTUAL_ENV=/torch/venv3/pytorch
-RUN python3 -m venv $VIRTUAL_ENV
+RUN python3 -m venv $VIRTUAL_ENV \
+    && pip3 install -r /workspace/stable_diffusion/requirements.txt
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"

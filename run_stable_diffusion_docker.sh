@@ -1,6 +1,6 @@
 #/bin/bash
 export MY_CONTAINER="stable_diffusion"
-IMAGE_NAME=yellow.hub.cambricon.com/pytorch/pytorch:v1.15.0-torch1.9-ubuntu18.04-py37
+IMAGE_NAME=stable_diffusion_ubuntu18.04_py37_cntoolkit3.5.2:v1
 
 num=`docker ps -a|grep "$MY_CONTAINER"|wc -l`
 echo $num

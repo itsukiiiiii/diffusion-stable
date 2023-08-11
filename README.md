@@ -4,9 +4,24 @@
 - 支持 text2img、img2img、image inpainting 功能
 
 ## 版本信息
-- StableDiffusion 官方代码：https://github.com/Stability-AI/stablediffusion.git
-- Commit ID: cf1d67a6fd5ea1aa600c4df58e5b47da45f6bdbf
+- StableDiffusion 官方代码：https://github.com/Stability-AI/stablediffusion.git (commit ID: cf1d67a6fd5ea1aa600c4df58e5b47da45f6bdbf)
 - 框架: PyTorch
+
+## 使用 docker 环境
+如果提供的有现成的 docker 镜像，可以跳过下面的 “环境配置” 部分。准备好数据集和模型后，可以直接加载使用。
+- 加载 docker
+```bash
+docker load -i stable_diffusion_ubuntu18.04_py37_cntoolkit3.5.2.tar.gz
+```
+- 启动 docker
+```bash
+bash run_stable_diffusion_docker.sh
+```
+
+## 环境配置 (docker 内已经配置好)
+```bash
+pip3 install -r requirements.txt
+```
 
 ## 准备模型
 - Text2img、Img2img (./models/v2-1_768-nonema-pruned.ckpt) 
@@ -26,13 +41,7 @@ pretrained_path = "/workspace/models/open_clip_pytorch_model.bin"
 model, _, _ = open_clip.create_model_and_transforms(arch, device=torch.device('cpu'), pretrained=pretrained_path)
 ```
 
-## 安装依赖
-```bash
-pip3 install -r requirements.txt
-```
-
 ## 推理
-
 - Text2Img
 ```bash
 # txt2img测试
