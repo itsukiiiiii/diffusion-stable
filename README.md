@@ -37,7 +37,7 @@ wget -p ./models https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/re
 ```bash
 # ./ldm/modules/encoders/modules.py +191
 # 模型路径根据实际位置进行设置，以下路径仅为举例
-pretrained_path = "/workspace/models/open_clip_pytorch_model.bin"
+pretrained_path = "/workspace/stable_diffusion/models/open_clip_pytorch_model.bin"
 model, _, _ = open_clip.create_model_and_transforms(arch, device=torch.device('cpu'), pretrained=pretrained_path)
 ```
 
