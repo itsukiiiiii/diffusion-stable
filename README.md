@@ -1,29 +1,38 @@
 # Stable_Diffusion
-## 前言
+## 0 前言
 - 支持单卡推理
 - 支持 text2img、img2img、image inpainting 功能
 
-## 版本信息
+## 1 版本信息
 - StableDiffusion 官方代码：https://github.com/Stability-AI/stablediffusion.git (commit ID: cf1d67a6fd5ea1aa600c4df58e5b47da45f6bdbf)
 - 框架: PyTorch
 
-## 使用 docker 环境
-如果提供的有现成的 docker 镜像，可以跳过下面的 “环境配置” 部分。准备好数据集和模型后，可以直接加载使用。
-- 加载 docker
+## 2 构建测试环境 
+**`提示：如果有现成的 docker 使用，可以跳过 '构建测试环境' 和 '环境配置' 部分。直接 docker load 加载镜像后，使用 docker 容器启动脚本即可`**  
+
+- 2.1 获取并加载基础 docker 镜像
 ```bash
-docker load -i stable_diffusion_ubuntu18.04_py37_cntoolkit3.5.2.tar.gz
+wget https://sdk.cambricon.com/static/PyTorch/MLU370_1.9_v1.15.0_X86_ubuntu18.04_python3.7_docker/pytorch-v1.15.0-torch1.9-ubuntu18.04-py37.tar.gz
+
+docker load -i pytorch-v1.15.0-torch1.9-ubuntu18.04-py37.tar.gz
 ```
-- 启动 docker
+
+- 2.2 使用 dockerfile 构建测试镜像
+```bash
+docker build -t stable_diffusion_ubuntu18.04_py37_cntoolkit3.5.2:v1 .
+```
+
+- 2.3 创建并运行测试容器
 ```bash
 bash run_stable_diffusion_docker.sh
 ```
 
-## 环境配置 (docker 内已经配置好)
+## 3 环境配置 (docker 内已经配置好)
 ```bash
 pip3 install -r requirements.txt
 ```
 
-## 准备模型
+## 4 准备模型
 - Text2img、Img2img (./models/v2-1_768-nonema-pruned.ckpt) 
 - OpenCLIP transformer encoder for text （CLIP-ViT-H-14-laion2B-s32B-b79K）
 - Image Inpainting (./models/512-inpainting-ema.ckpt)
@@ -41,7 +50,7 @@ pretrained_path = "/workspace/stable_diffusion/models/open_clip_pytorch_model.bi
 model, _, _ = open_clip.create_model_and_transforms(arch, device=torch.device('cpu'), pretrained=pretrained_path)
 ```
 
-## 推理
+## 5 推理
 - Text2Img
 ```bash
 # txt2img测试
