@@ -188,7 +188,7 @@ class FrozenOpenCLIPEmbedder(AbstractEncoder):
                  freeze=True, layer="last"):
         super().__init__()
         assert layer in self.LAYERS
-        pretrained_path = "/workspace/stable_diffusion/models/open_clip_pytorch_model.bin"
+        pretrained_path = "/workspace/model/favorite/large-scale-models/model-v1/stable_diffusion_ckpt/models/open_clip_pytorch_model.bin"
         model, _, _ = open_clip.create_model_and_transforms(arch, device=torch.device('cpu'), pretrained=pretrained_path)
         del model.visual
         self.model = model

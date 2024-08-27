@@ -31,11 +31,11 @@ def chunk(it, size):
 
 def load_model_from_config(config, ckpt, verbose=False):
     print(f"Loading model from {ckpt}")
+    model = instantiate_from_config(config.model)
     pl_sd = torch.load(ckpt, map_location="cpu")
     if "global_step" in pl_sd:
         print(f"Global Step: {pl_sd['global_step']}")
     sd = pl_sd["state_dict"]
-    model = instantiate_from_config(config.model)
     m, u = model.load_state_dict(sd, strict=False)
     if len(m) > 0 and verbose:
         print("missing keys:")
@@ -63,126 +63,27 @@ def load_img(path):
 
 def main():
     parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--prompt",
-        type=str,
-        nargs="?",
-        default="a painting of a virus monster playing guitar",
-        help="the prompt to render"
-    )
-
-    parser.add_argument(
-        "--init-img",
-        type=str,
-        nargs="?",
-        help="path to the input image"
-    )
-
-    parser.add_argument(
-        "--outdir",
-        type=str,
-        nargs="?",
-        help="dir to write results to",
-        default="outputs/img2img-samples"
-    )
-
-    parser.add_argument(
-        "--ddim_steps",
-        type=int,
-        default=50,
-        help="number of ddim sampling steps",
-    )
-
-    parser.add_argument(
-        "--fixed_code",
-        action='store_true',
-        help="if enabled, uses the same starting code across all samples ",
-    )
-
-    parser.add_argument(
-        "--ddim_eta",
-        type=float,
-        default=0.0,
-        help="ddim eta (eta=0.0 corresponds to deterministic sampling",
-    )
-    parser.add_argument(
-        "--n_iter",
-        type=int,
-        default=1,
-        help="sample this often",
-    )
-
-    parser.add_argument(
-        "--C",
-        type=int,
-        default=4,
-        help="latent channels",
-    )
-    parser.add_argument(
-        "--f",
-        type=int,
-        default=8,
-        help="downsampling factor, most often 8 or 16",
-    )
-
-    parser.add_argument(
-        "--n_samples",
-        type=int,
-        default=2,
-        help="how many samples to produce for each given prompt. A.k.a batch size",
-    )
-
-    parser.add_argument(
-        "--n_rows",
-        type=int,
-        default=0,
-        help="rows in the grid (default: n_samples)",
-    )
-
-    parser.add_argument(
-        "--scale",
-        type=float,
-        default=9.0,
-        help="unconditional guidance scale: eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))",
-    )
-
-    parser.add_argument(
-        "--strength",
-        type=float,
-        default=0.8,
-        help="strength for noising/unnoising. 1.0 corresponds to full destruction of information in init image",
-    )
-
-    parser.add_argument(
-        "--from-file",
-        type=str,
-        help="if specified, load prompts from this file",
-    )
-    parser.add_argument(
-        "--config",
-        type=str,
-        default="configs/stable-diffusion/v2-inference.yaml",
-        help="path to config which constructs model",
-    )
-    parser.add_argument(
-        "--ckpt",
-        type=str,
-        help="path to checkpoint of model",
-    )
-    parser.add_argument(
-        "--seed",
-        type=int,
-        default=42,
-        help="the seed (for reproducible sampling)",
-    )
-    parser.add_argument(
-        "--precision",
-        type=str,
-        help="evaluate at this precision",
-        choices=["full", "autocast"],
-        default="autocast"
-    )
+    #TODO:设置prompt参数为 "A fantasy landscape, trending on artstation"
+    parser.add_argument("______", type=str, nargs="?", default="__________________________________________", help="the prompt to render")
+    parser.add_argument("--init-img", type=str, nargs="?", help="path to the input image")
+    parser.add_argument("--outdir", type=str, nargs="?", help="dir to write results to", default="outputs/img2img-samples")
+    parser.add_argument("--ddim_steps", type=int, default=50, help="number of ddim sampling steps")
+    parser.add_argument("--fixed_code", action='store_true', help="if enabled, uses the same starting code across all samples ")
+    parser.add_argument("--ddim_eta", type=float, default=0.0, help="ddim eta (eta=0.0 corresponds to deterministic sampling")
+    parser.add_argument("--n_iter", type=int, default=1, help="sample this often")
+    parser.add_argument("--C", type=int, default=4, help="latent channels")
+    parser.add_argument("--f", type=int, default=8, help="downsampling factor, most often 8 or 16")
+    parser.add_argument("--n_samples", type=int, default=2, help="how many samples to produce for each given prompt. A.k.a batch size")
+    parser.add_argument("--n_rows", type=int, default=0, help="rows in the grid (default: n_samples)")
+    parser.add_argument("--scale", type=float, default=9.0, help="unconditional guidance scale: eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))")
+    parser.add_argument("--strength", type=float, default=0.8, help="strength for noising/unnoising. 1.0 corresponds to full destruction of information in init image")
+    parser.add_argument("--from-file", type=str, help="if specified, load prompts from this file")
+    #TODO:设置config参数为configs/stable-diffusion/v2-inference-v.yaml
+    parser.add_argument("______", type=str, default="__________________________________________", help="path to config which constructs model")
+    #TODO:设置ckpt参数为./models/v2-1_768-nonema-pruned.ckpt 
+    parser.add_argument("______", type=str, default="__________________________________________", help="path to checkpoint of model")
+    parser.add_argument("--seed", type=int, default=42, help="the seed (for reproducible sampling)")
+    parser.add_argument("--precision", type=str, help="evaluate at this precision", choices=["full", "autocast"], default="autocast")
 
     opt = parser.parse_args()
     seed_everything(opt.seed)
@@ -194,7 +95,11 @@ def main():
     model = model.to(device)
 
     sampler = DDIMSampler(model)
-
+    print("DDIM PASS!")
+    msbool = False
+    st_encbool = False
+    psdbool = False
+    dimdecodebool= False
     os.makedirs(opt.outdir, exist_ok=True)
     outpath = opt.outdir
 
@@ -222,11 +127,14 @@ def main():
     grid_count = len(os.listdir(outpath)) - 1
 
     assert os.path.isfile(opt.init_img)
-    init_image = load_img(opt.init_img).to(device)
+    #TODO:调用load_img函数对输入opt.init_img进行操作
+    init_image = ______________________.to(device)
     init_image = repeat(init_image, '1 ... -> b ...', b=batch_size)
-    init_latent = model.get_first_stage_encoding(model.encode_first_stage(init_image))  # move to latent space
+    #TODO:调用model.encode_first_stage函数对输入init_image进行操作，再将结果作为model.get_first_stage_encoding函数的输入得到初始潜在特征
+    init_latent = _______________________________________________  # move to latent space
 
     sampler.make_schedule(ddim_num_steps=opt.ddim_steps, ddim_eta=opt.ddim_eta, verbose=False)
+    print("make_schedule PASS!")
 
     assert 0. <= opt.strength <= 1., 'can only work with strength in [0.0, 1.0]'
     t_enc = int(opt.strength * opt.ddim_steps)
@@ -244,15 +152,19 @@ def main():
                             uc = model.get_learned_conditioning(batch_size * [""])
                         if isinstance(prompts, tuple):
                             prompts = list(prompts)
-                        c = model.get_learned_conditioning(prompts)
+                        #TODO:调用model.get_learned_conditioning函数对prompts进行操作得到约束条件
+                        c = _______________________________________
 
                         # encode (scaled latent)
-                        z_enc = sampler.stochastic_encode(init_latent, torch.tensor([t_enc] * batch_size).to(device))
+                        #TODO:调用sampler.stochastic_encode函数对输入初始潜在特征进行操作得到约束条件
+                        z_enc = _________(___________, torch.tensor([t_enc] * batch_size).to(device))
+                        st_encbool = True
                         # decode it
-                        samples = sampler.decode(z_enc, c, t_enc, unconditional_guidance_scale=opt.scale,
-                                                 unconditional_conditioning=uc, )
-
-                        x_samples = model.decode_first_stage(samples)
+                        #TODO:调用sampler.decode函数，输入包括t_enc、uc、c、z_enc
+                        samples =_________________________, unconditional_guidance_scale=opt.scale)                   
+                        dimdecodebool=True
+                        #TODO:调用model.decode_first_stage函数对输入samples进行操作
+                        x_samples = _________________________________
                         x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
 
                         for x_sample in x_samples:
@@ -274,9 +186,12 @@ def main():
                 grid = put_watermark(grid, wm_encoder)
                 grid.save(os.path.join(outpath, f'grid-{grid_count:04}.png'))
                 grid_count += 1
-
+    if st_encbool:
+        print("stochastic_encode PASS!")
+    if dimdecodebool:
+        print("decode PASS!")
+    print("img2img PASS!")
     print(f"Your samples are ready and waiting for you here: \n{outpath} \nEnjoy.")
-
 
 if __name__ == "__main__":
     main()
